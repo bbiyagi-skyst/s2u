@@ -140,7 +140,20 @@ The @ keyword sets the note attribute of the whole section. Note that it works o
 | `@dy(x)`   | Dynamic level *x* (e.g., `ff`, `pp`) for all notes                |
 
 ## Triplets
+Triplets are written by specifying the number of notes you want in it.
 
+**example**
+
+```sheetlang
+[
+  c: "Cm7 - - "
+  (3
+  n: C + F, 1/4, u(x)
+  n: E3, 1/4, s, d(F3)
+  n: R, 1/2
+  )
+]
+```
 
 ## 🔄 Loop Structures
 
