@@ -1,7 +1,8 @@
 package dev.jhyub.s2u.data
 
 class Bar(
-    val code: String,
+    val code: String?,
+    val lyrics: String?,
     val notes: List<Note>,
     val repeatMark: RepeatMarkType?,
     val pos: CodePosition
