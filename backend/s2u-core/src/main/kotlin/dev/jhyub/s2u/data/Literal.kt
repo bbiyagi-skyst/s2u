@@ -7,7 +7,7 @@ sealed class Literal {
 
     data class PitchLiteral(val value: Pitch): Literal()
 
-    data class RythmLiteral(val value: Rhythm): Literal()
+    data class RhythmLiteral(val value: Rhythm): Literal()
 
     data class CodeLiteral(val value: String): Literal()
 
