@@ -5,6 +5,8 @@ import dev.jhyub.s2u.data.CodePosition
 import dev.jhyub.s2u.data.DynamicValue
 import dev.jhyub.s2u.data.Literal
 import dev.jhyub.s2u.data.NoteProperty
+import dev.jhyub.s2u.data.Pitch
+import dev.jhyub.s2u.data.PitchName
 import dev.jhyub.s2u.data.RepeatMarkType
 import dev.jhyub.s2u.data.Rhythm
 
@@ -36,6 +38,8 @@ data class File(val blocks: List<Block>) {
         }
 
   }
+
+    fun
 }
 
 fun literalFromTokens(tokens: List<Pair<Token, CodePosition>>): Literal {
@@ -46,6 +50,7 @@ fun literalFromTokens(tokens: List<Pair<Token, CodePosition>>): Literal {
         } else if (token.first is Token.STRING_LITERAL) {
             return Literal.StringLiteral((token.first as Token.STRING_LITERAL).content)
         } else if (token.first is Token.IDENTIFIER) {
+            val name = (token.first as Token.IDENTIFIER).value
             val idToDynVal = mapOf(
                 "ff" to DynamicValue.FF,
                 "f" to DynamicValue.F,
@@ -54,8 +59,20 @@ fun literalFromTokens(tokens: List<Pair<Token, CodePosition>>): Literal {
                 "p" to DynamicValue.P,
                 "mp" to DynamicValue.MP
             )
-            if((token.first as Token.IDENTIFIER).value in idToDynVal) {
+            if(name in idToDynVal) {
                 return Literal.DynamicLiteral(idToDynVal[(token.first as Token.IDENTIFIER).value]!!)
+            }
+            val pitch = mapOf(
+                'C' to PitchName.C,
+                'D' to PitchName.D,
+                'E' to PitchName.E,
+                'F' to PitchName.F,
+                'G' to PitchName.G,
+                'A' to PitchName.A,
+                'B' to PitchName.B
+            )
+            if(name[0] in pitch) {
+                return Literal.PitchLiteral(Pitch(pitch[name[0]]!!, name.getOrNull(1)?.digitToIntOrNull() ?: 4))
             }
             return Literal.NameLiteral((token.first as Token.IDENTIFIER).value)
         }
@@ -86,19 +103,21 @@ fun notePropertyFromTokens(tokens: List<Pair<Token, CodePosition>>): NotePropert
         when((tokens[0].first as Token.IDENTIFIER).value) {
             "u" -> NoteProperty.Up(literalFromTokens(tokens.subList(2, tokens.size - 1)))
             "dy" -> NoteProperty.Dynamic(literalFromTokens(tokens.subList(2, tokens.size - 1)))
+            "d" -> NoteProperty.Down(literalFromTokens(tokens.subList(2, tokens.size - 1)))
             else -> throw SyntaxException("Unknown note property at ${tokens[0].second.first}:${tokens[0].second.second}")
         }
     }
 
 }
 
-data class Attribute(val name: String, val value: List<Literal>, val noteProperty: List<NoteProperty>, val codePosition: CodePosition) {
+data class Attribute(val name: String, val value: List<Literal>, val noteProperty: List<NoteProperty>, val codePosition: CodePosition, val semicolon: Boolean) {
     companion object {
         fun fromTokens(tokens: List<Pair<Token, CodePosition>>): Attribute {
             if(tokens[1].first !is Token.COLON) throw SyntaxException("Colon expected at ${tokens[1].second.first}:${tokens[1].second.second}")
             val name = (tokens[0].first as Token.IDENTIFIER).value
             val value = mutableListOf<Literal>()
             val noteProperty = mutableListOf<NoteProperty>()
+            var semicolon = false
             println("attribute parser got $tokens")
 
             var idx = 2
@@ -126,14 +145,17 @@ data class Attribute(val name: String, val value: List<Literal>, val notePropert
                     start = ++idx
                     continue
                 }
+                if(tokens[idx].first is Token.SEMICOLON) {
+                    semicolon = true
+                }
                 idx++
             }
 
-            return Attribute(name, value, noteProperty, tokens[0].second)
+            return Attribute(name, value, noteProperty, tokens[0].second, semicolon)
         }
     }
 }
-data class Block(val type: String, val name: String?, val attributes: List<Attribute>, val content: List<Called>, val codePosition: CodePosition) {
+data class Block(val type: String, val name: String?, val attributeNames: List<String>, val attributes: List<Attribute>, val content: List<Called>, val codePosition: CodePosition) {
     companion object {
         fun fromTokens(tokens: List<Pair<Token, CodePosition>>): Block {
             var idx = 0
@@ -154,45 +176,80 @@ data class Block(val type: String, val name: String?, val attributes: List<Attri
             } else {
                 throw SyntaxException("Wrong block leader at ${tokens[idx].second.first}:${tokens[idx].second.second}")
             }
+            println("block $type")
 
             if (tokens[idx+1].first is Token.CURLY_BRACKET_START) { // Anon
                 name = null
                 idx = idx + 2
             } else if (tokens[idx+1].first is Token.IDENTIFIER) {
                 name = (tokens[idx+1].first as Token.IDENTIFIER).value
-                idx = idx + 3
+                idx = idx + 2
             } else {
                 throw SyntaxException("Identifier expected at ${tokens[idx+1].second.first}:${tokens[idx+1].second.second}")
             }
 
+            val attributeNames = mutableListOf<String>()
+            if(tokens[idx].first is Token.SMALL_BRACKET_START) {
+                start = idx+1
+                while (idx < tokens.size) {
+                    if(tokens[idx].first is Token.SMALL_BRACKET_END) {
+                        println("$start to ${idx-1}")
+                        for (i in start..(idx-1) step 2) {
+                            (tokens[i].first as Token.IDENTIFIER).value.let { attributeNames.add(it) }
+                        }
+                        idx = idx + 2
+                        break
+                    }
+                    idx++
+                }
+            }
+
+
             val body = tokens.subList(idx, tokens.size-1)
             idx = 0
             start = 0
+            var barStart = 0
 
             while(body[idx].first is Token.NEWLINE) {
                 start = ++idx
             }
+            println("body $body")
 
             var trySeeingColon = true
             var haveSeenColon = false
+            var haveSeenBarStart = false
             val attributes = mutableListOf<Attribute>()
             val content = mutableListOf<Called>()
             while(idx < body.size) {
-
-                println("current start: $start idx: $idx")
-
                 if (body[idx].first is Token.COLON) {
-                    println("saw colon at $idx")
                     if (trySeeingColon) haveSeenColon = true
                     idx++
                     continue
                 }
+                if(body[idx].first is Token.BIG_BRACKET_END) {
+                    haveSeenBarStart = false
+                    trySeeingColon = false
+                    println("start: ${body[barStart].first}")
+                    println("idx: ${body[idx-1].first}")
+                    content.add(Bar.fromTokens(body.subList(barStart, idx-1)))
+                    start = ++idx
+                    continue
+                }
+                if(body[idx].first is Token.BIG_BRACKET_START) {
+                    println("Saw big bracket start")
+                    haveSeenBarStart = true
+                    trySeeingColon = true
+                    barStart = idx + 2
+                    start = idx + 2
+                }
                 if (body[idx].first is Token.NEWLINE) {
-                    println("saw nl at $idx")
                     if (haveSeenColon) {
                         attributes.add(Attribute.fromTokens(body.subList(start, idx)))
                         start = ++idx
                         haveSeenColon = false
+                        continue
+                    } else if (haveSeenBarStart) {
+
                     } else {
                         trySeeingColon = false
                         if(body[start].first is Token.IDENTIFIER) {
@@ -203,8 +260,11 @@ data class Block(val type: String, val name: String?, val attributes: List<Attri
                                 continue
                             }
                         }
-                        val singleInvocation = SingleInvocation.fromTokens(body.subList(start, idx))
-                        content.add(singleInvocation)
+                        if(start != idx) {
+
+                            val singleInvocation = SingleInvocation.fromTokens(body.subList(start, idx))
+                            content.add(singleInvocation)
+                        }
                         start = ++idx
                         continue
                     }
@@ -212,7 +272,7 @@ data class Block(val type: String, val name: String?, val attributes: List<Attri
                 idx++
             }
 
-            return Block(type, name, attributes, content, codePosition = codePosition)
+            return Block(type, name, attributeNames, attributes, content, codePosition = codePosition)
         }
     }
 }
@@ -220,7 +280,9 @@ sealed class Called
 data class Loop(val end: Int, val start: Int?, val step: Int?, val indexName: String?, val content: List<Called>, val codePosition: CodePosition): Called() {
     companion object {
         fun fromTokens(tokens: List<Pair<Token, CodePosition>>): Loop {
-            TODO()
+            println("$tokens")
+
+            return Loop(0, null, null, null, listOf(), tokens[0].second)
         }
     }
 }
@@ -265,7 +327,7 @@ data class SingleInvocation(val annotations: List<NoteProperty>, val name: Strin
     }
 }
 
-data class Bar(val repeatMarkType: RepeatMarkType?, val attributes: List<Attribute>) {
+data class Bar(val repeatMarkType: RepeatMarkType?, val attributes: List<Attribute>): Called() {
     companion object {
         fun fromTokens(tokens: List<Pair<Token, CodePosition>>): Bar {
             var idx = 0
@@ -296,36 +358,22 @@ data class Bar(val repeatMarkType: RepeatMarkType?, val attributes: List<Attribu
             var trySeeingColon = true
             var haveSeenColon = false
             val attributes = mutableListOf<Attribute>()
-            val content = mutableListOf<Called>()
             while (idx < body.size) {
 
-                println("current start: $start idx: $idx")
 
                 if (body[idx].first is Token.COLON) {
-                    println("saw colon at $idx")
                     if (trySeeingColon) haveSeenColon = true
                     idx++
                     continue
                 }
                 if (body[idx].first is Token.NEWLINE) {
-                    println("saw nl at $idx")
                     if (haveSeenColon) {
                         attributes.add(Attribute.fromTokens(body.subList(start, idx)))
                         start = ++idx
                         haveSeenColon = false
                     } else {
-                        trySeeingColon = false
-                        if (body[start].first is Token.IDENTIFIER) {
-                            if ((body[start].first as Token.IDENTIFIER).value == "loop") {
-                                val loop = Loop.fromTokens(body.subList(start, idx))
-                                content.add(loop)
-                                start = ++idx
-                                continue
-                            }
-                        }
-                        val singleInvocation = SingleInvocation.fromTokens(body.subList(start, idx))
-                        content.add(singleInvocation)
                         start = ++idx
+                        trySeeingColon = false
                         continue
                     }
                 }

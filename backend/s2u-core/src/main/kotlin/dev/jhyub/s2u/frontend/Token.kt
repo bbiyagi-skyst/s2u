@@ -12,7 +12,7 @@ sealed class Token() {
     class CURLY_BRACKET_START(): Token() { override fun toString(): String = "{" }
     class CURLY_BRACKET_END(): Token() { override fun toString(): String = "}" }
     class BIG_BRACKET_START(): Token() { override fun toString(): String = "[" }
-    class BIG_BARCKET_END(): Token() { override fun toString(): String = "]" }
+    class BIG_BRACKET_END(): Token() { override fun toString(): String = "]" }
 
     class SLASH(): Token() { override fun toString(): String = "/" }
     class COLON(): Token() { override fun toString(): String = ":" }
@@ -42,14 +42,16 @@ fun String.tokenize(): List<Pair<Token, CodePosition>> {
         if(i.isEmpty()) continue
         var idx = 0
         var last = 0
+        var sawQuote = false
         while (idx < i.length) {
-            if (i[idx] == ' ' || i[idx] == '\t') {
+            if (!sawQuote && (i[idx] == ' ' || i[idx] == '\t')) {
                 if(last != idx) {
                     finalContents.add(i.substring(last, idx) to CodePosition(line+1, last+1))
                 }
                 last = ++idx
                 continue
             }
+            if (i[idx] == '"') sawQuote = !sawQuote
             if (idx < i.length - 1) {
                 if("${i[idx]}${i[idx+1]}" in twoLetterSplitKeyword) {
                     if (idx != last) finalContents.add(i.substring(last, idx) to CodePosition(line+1, last+1))
@@ -78,7 +80,7 @@ fun String.tokenize(): List<Pair<Token, CodePosition>> {
         "(" to Token.SMALL_BRACKET_START(),
         ")" to Token.SMALL_BRACKET_END(),
         "[" to Token.BIG_BRACKET_START(),
-        "]" to Token.BIG_BARCKET_END(),
+        "]" to Token.BIG_BRACKET_END(),
         "/" to Token.SLASH(),
         ":" to Token.COLON(),
         ";" to Token.SEMICOLON(),
