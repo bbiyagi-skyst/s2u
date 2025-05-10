@@ -5,6 +5,7 @@ import dev.jhyub.s2u.data.CodePosition
 import dev.jhyub.s2u.data.DynamicValue
 import dev.jhyub.s2u.data.Literal
 import dev.jhyub.s2u.data.NoteProperty
+import dev.jhyub.s2u.data.RepeatMarkType
 import dev.jhyub.s2u.data.Rhythm
 
 
@@ -168,7 +169,6 @@ data class Block(val type: String, val name: String?, val attributes: List<Attri
             idx = 0
             start = 0
 
-            println("leftover body is $body")
             while(body[idx].first is Token.NEWLINE) {
                 start = ++idx
             }
@@ -263,4 +263,76 @@ data class SingleInvocation(val annotations: List<NoteProperty>, val name: Strin
             return SingleInvocation(annotations, name, arguments, codePosition = tokens[0].second)
         }
     }
+}
+
+data class Bar(val repeatMarkType: RepeatMarkType?, val attributes: List<Attribute>) {
+    companion object {
+        fun fromTokens(tokens: List<Pair<Token, CodePosition>>): Bar {
+            var idx = 0
+            var end = 0
+            val repeatMarkType: RepeatMarkType?
+            if (tokens[1].first is Token.COLON) {
+                repeatMarkType = RepeatMarkType.OPEN
+                idx = 2
+                end = tokens.size - 1
+            } else if (tokens[tokens.size - 2].first is Token.COLON) {
+                repeatMarkType = RepeatMarkType.CLOSE
+                idx = 1
+                end = tokens.size - 2
+            } else {
+                repeatMarkType = null
+                idx = 1
+                end = tokens.size - 1
+            }
+
+            val body = tokens.subList(idx, end)
+            idx = 0
+            var start = 0
+
+            while (body[idx].first is Token.NEWLINE) {
+                start = ++idx
+            }
+
+            var trySeeingColon = true
+            var haveSeenColon = false
+            val attributes = mutableListOf<Attribute>()
+            val content = mutableListOf<Called>()
+            while (idx < body.size) {
+
+                println("current start: $start idx: $idx")
+
+                if (body[idx].first is Token.COLON) {
+                    println("saw colon at $idx")
+                    if (trySeeingColon) haveSeenColon = true
+                    idx++
+                    continue
+                }
+                if (body[idx].first is Token.NEWLINE) {
+                    println("saw nl at $idx")
+                    if (haveSeenColon) {
+                        attributes.add(Attribute.fromTokens(body.subList(start, idx)))
+                        start = ++idx
+                        haveSeenColon = false
+                    } else {
+                        trySeeingColon = false
+                        if (body[start].first is Token.IDENTIFIER) {
+                            if ((body[start].first as Token.IDENTIFIER).value == "loop") {
+                                val loop = Loop.fromTokens(body.subList(start, idx))
+                                content.add(loop)
+                                start = ++idx
+                                continue
+                            }
+                        }
+                        val singleInvocation = SingleInvocation.fromTokens(body.subList(start, idx))
+                        content.add(singleInvocation)
+                        start = ++idx
+                        continue
+                    }
+                }
+                idx++
+            }
+            return Bar(repeatMarkType, attributes)
+        }
+    }
+
 }
