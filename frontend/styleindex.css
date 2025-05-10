@@ -1,0 +1,123 @@
+/* 기본 설정 */
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f9fafb;
+  margin: 0;
+  padding: 0;
+}
+
+/* 헤더 영역 */
+header {
+  background-color: #6366f1;
+  color: white;
+  padding: 16px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+header h1 {
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+/* 새 리포 버튼을 로그아웃 왼쪽으로 당김 */
+#new-repo-btn {
+  margin-left: auto;
+}
+
+/* 버튼 스타일 (공통) */
+.btn {
+  background-color: #4f46e5;
+  color: white;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-left: 12px;
+  white-space: nowrap;
+}
+
+.btn:hover {
+  background-color: #4f46e5;
+}
+
+/* 메인 컨테이너 */
+main {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* 리포지토리 목록 */
+#repo-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#repo-list li {
+  background-color: #f3f4f6;
+  padding: 16px;
+  margin-bottom: 12px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  transition: background-color 0.2s, transform 0.2s;
+  cursor: pointer;
+}
+
+#repo-list li:hover {
+  background-color: #e0e7ff;
+  transform: scale(1.01);
+}
+
+/* 제목과 메타 정보 스타일 */
+#repo-list li .repo-name {
+  display: block;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #1f2937;
+  margin-bottom: 8px;
+}
+
+#repo-list li .repo-info {
+  font-size: 0.95rem;
+  color: #4b5563;
+  margin-top: 4px;
+}
+
+/* repo.html 버튼 컨테이너 */
+#repo-section #buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+  justify-content: flex-end;
+}
+
+/* repo.html 전용 버튼 */
+#repo-section #buttons .btn {
+  background-color: #6366f1;
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+#repo-section #buttons .btn:hover {
+  background-color: #4f46f0;
+  transform: translateY(-2px);
+}
+
+#repo-section #buttons .btn:disabled {
+  background-color: #a5b4fc;
+  cursor: not-allowed;
+  box-shadow: none;
+}

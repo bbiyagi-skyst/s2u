@@ -1,30 +1,85 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <title>리포지토리 상세</title>
-  <link rel="stylesheet" href="css/style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>abcjs Live Rendering</title>
+  <link rel="stylesheet" href="../node_modules/abcjs/abcjs-audio.css">
+  <link rel="stylesheet" href="stylerepo.css">
+  <style>
+    #abc-output svg {
+      max-width: 100%;
+      height: auto;
+    }
+    .abcjs-note_selected {
+      fill: red;
+      stroke: red;
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <h1 id="repo-name"></h1>
-    <span id="back" class="btn">목록으로</span>
-    <span id="logout" class="btn">로그아웃</span>
-  </header>
-  <main>
-    <section id="repo-meta">
-      <label>Name: <input type="text" id="edit-name" /></label><br/>
-      <label>Description: <input type="text" id="edit-desc" /></label><br/>
-    </section>
-    <section id="repo-content">
-      <h2>악보 코드</h2>
-      <textarea id="edit-content" rows="10"></textarea><br/>
-      <span id="update-submit" class="btn">저장</span>
-      <span id="delete-submit" class="btn">삭제</span>
-    </section>
-  </main>
-  <script src="js/auth.js"></script>
-  <script src="js/common.js"></script>
-  <script src="js/repo.js"></script>
+  <div class="container">
+    <div class="header">
+      <div class="left">
+        <div>
+          <div id="name-display" class="name-display"></div>
+          <input id="name-input" type="text" class="name-input hidden"/>
+        </div>
+        <div>
+          <input type="text" id="description" class="description-input" placeholder="Enter description"/>
+        </div>
+      </div>
+      <div class="right">
+        <button id="back-btn" class="btn btn-gray">확인</button>
+        <button id="logout-btn" class="btn btn-purple">로그아웃</button>
+      </div>
+    </div>
+
+    <div class="resizable-container">
+      <div class="editor-pane">
+        <h2>ABCjs 코드 입력</h2>
+        <textarea id="abc-input"></textarea>
+      </div>
+
+      <div id="resizer"></div>
+
+      <div class="render-pane"> 
+        <div class="render-header">
+          <div class="render-title">렌더링 결과</div>
+            <button id="play-button" class="btn-indigo btn">Play</button>
+            </div>
+        <div id="abc-output" ></div>
+        <div id="synth-controls"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../node_modules/abcjs/dist/abcjs-basic.js"></script>
+  <script src="../node_modules/abcjs/dist/abcjs-basic-min.js"></script>
+  <script src="js/app.js"></script>
+  <script type="module" src="js/repo.js"></script>
+
+  <script>
+    const nameDisplay = document.getElementById('name-display');
+    const nameInput = document.getElementById('name-input');
+
+    nameDisplay.addEventListener('click', () => {
+      nameDisplay.classList.add('hidden');
+      nameInput.classList.remove('hidden');
+      nameInput.focus();
+    });
+
+    nameInput.addEventListener('blur', () => {
+      nameDisplay.textContent = nameInput.value.trim() || '새 레포지토리';
+      nameInput.classList.add('hidden');
+      nameDisplay.classList.remove('hidden');
+    });
+
+    nameInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        nameInput.blur();
+      }
+    });
+  </script>
 </body>
 </html>

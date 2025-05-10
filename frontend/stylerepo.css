@@ -1,0 +1,197 @@
+/* Body & Container */
+body {
+  background-color: #f9fafb;
+  padding: 24px;
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 20px 25px rgba(0,0,0,0.1);
+  overflow: hidden;
+}
+
+/* Header */
+.header {
+  padding: 24px;
+  border-bottom: 1px solid #e5e7eb;
+  background-color: #f3f4f6;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.left {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+
+.name-display:hover {
+  text-decoration: underline;
+}
+
+.name-display,
+.name-input {
+  /* 공통 텍스트 속성 */
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 30px;
+  font-weight: 600;
+  color: #111827;
+  line-height: 1.2;
+
+  /* 서브픽셀 보간 방식 통일 */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+.name-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  caret-color: black;
+  margin: 0;
+  padding: 0;
+}
+
+.description-input,
+#description-display {
+  width: 500px;
+  height: 2.5rem;              /* 40px 정도로 고정 */
+  box-sizing: border-box;      /* 패딩 포함해 계산 */
+  line-height: 1.5;            /* 텍스트 수직 정렬 */
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+}
+
+/* focus 시 강조 (input만) */
+.description-input:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 1px #6366f1;
+  outline: none;
+}
+
+/* Buttons */
+.btn {
+  padding: 8px 16px;
+  color: #fff;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  border: none;
+}
+
+.btn-gray {
+  background-color: #1f2937;
+}
+
+.btn-gray:hover {
+  background-color: #111827;
+}
+
+.btn-purple {
+  background-color: #9333ea;
+}
+
+.btn-purple:hover {
+  background-color: #7e22ce;
+}
+
+.btn-indigo {
+  background-color: #4f46e5;
+}
+
+.btn-indigo:hover {
+  background-color: #4338ca;
+}
+
+/* Resizable Container */
+.resizable-container {
+  display: flex;
+  width: 100%;
+  height: 500px;
+}
+
+.editor-pane, .render-pane {
+  width: 50%;
+  min-width: 200px;
+  padding: 24px;
+}
+
+.editor-pane h2, .render-pane h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 16px;
+}
+
+#abc-input {
+  width: 96%;
+  height: 80%;
+  padding: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-family: monospace;
+  resize: none;
+}
+
+#abc-input:focus {
+  border-color: #6366f1;
+  outline: none;
+  box-shadow: 0 0 0 1px #6366f1;
+}
+
+#resizer {
+  width: 8px;
+  cursor: col-resize;
+  background-color: #e5e7eb;
+}
+
+#resizer:hover {
+  background-color: #d1d5db;
+}
+
+.render-pane {
+  border-left: 1px solid #e5e7eb;
+  background-color: #f9fafb;
+  overflow: auto;
+}
+
+.hidden {
+  display: none !important;
+}
+
+
+
+/* Render Pane Header */
+.render-header {
+  display: flex;
+  justify-content: space-between; /* 왼쪽 타이틀, 오른쪽 버튼 */
+  align-items: center;
+  margin-bottom: 16px;            /* 아래 출력과 간격 */
+}
+
+/* 렌더링 결과 제목 스타일 */
+.render-title {
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 1.5rem;     /* 약 24px */
+  font-weight: 700;      /* 더 굵은 강조 */
+  color: #1f2937;        /* 짙은 그레이 */
+  letter-spacing: -0.5px;/* 약간의 타이틀 간격 조정 */
+  text-transform: uppercase; /* 대문자로 강조 */
+}
+
+/* Play 버튼은 기존 .btn-indigo, .btn 그대로 사용하지만 높이를 맞춰줍니다 */
+#play-button {
+  padding: 8px 16px;
+  font-size: 1rem;
+  font-weight: bold;
+  height: 35px;           /* 타이틀과 정렬되도록 고정 높이 */
+  align-self: flex-start; /* flex-start 로 위치 보정 */
+}

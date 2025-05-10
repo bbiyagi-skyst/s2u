@@ -1,0 +1,203 @@
+/* Global body */
+body {
+    background-color: #f9fafb;
+    padding: 24px;
+  }
+  
+  .container {
+    max-width: 1280px;
+    margin: 0 auto;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 20px 25px rgba(0,0,0,0.1);
+    overflow: hidden;
+  }
+  
+  /* Header */
+  .header {
+    padding: 24px;
+    border-bottom: 1px solid #e5e7eb;
+    background-color: #f3f4f6;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .left-group {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .name-display {
+    font-size: 30px;
+    font-weight: 600;
+    color: #111827;
+    cursor: pointer;
+  }
+  
+  .description {
+    display: block;
+    width: 100%;
+    margin-top: 10px;
+    
+  }
+  
+  .button-group {
+    display: flex;
+    gap: 8px;
+    margin-left: auto;  /* ← 푸시 */
+
+  }
+  
+  /* Buttons */
+  .btn {
+    padding: 8px 16px;
+    color: #fff;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.2s ease;
+  }
+  
+  .btn-gray {
+    background-color: #1f2937;
+  }
+  
+  .btn-gray:hover {
+    background-color: #111827;
+  }
+  
+  .btn-purple {
+    background-color: #9333ea;
+  }
+  
+  .btn-purple:hover {
+    background-color: #7e22ce;
+  }
+  
+  .btn-yellow {
+    background-color: #eab308;
+  }
+  
+  .btn-yellow:hover {
+    background-color: #ca8a04;
+  }
+  
+  .btn-indigo {
+    background-color: #4f46e5;
+  }
+  
+  .btn-indigo:hover {
+    background-color: #4338ca;
+  }
+  
+  /* Resizable Container */
+  .resizable-container {
+    display: flex;
+    width: 100%;
+    height: 500px;
+  }
+  
+  .editor-pane, .render-pane {
+    padding: 24px;
+    width: 50%;
+    min-width: 200px;
+  }
+  
+  .editor-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  
+  .editor-header h2,
+  .render-pane h2 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #111827;
+  }
+  
+  .abc-input {
+    width: 95%;
+    height: 80%;
+    padding: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-family: monospace;
+    white-space: pre-wrap;
+    resize: none;
+    transition: border-color 0.3s ease-in-out;
+    overflow: auto;
+  }
+  
+  .abc-input:focus {
+    border-color: #6366f1;
+    outline: none;
+    box-shadow: 0 0 0 1px #6366f1;
+  }
+  
+  .resizer {
+    width: 8px;
+    cursor: col-resize;
+    background-color: #e5e7eb;
+  }
+  
+  .resizer:hover {
+    background-color: #d1d5db;
+  }
+  
+  .render-pane {
+    border-left: 1px solid #e5e7eb;
+    background-color: #f9fafb;
+    overflow: auto;
+  }
+  
+  .abc-output {
+    border-radius: 6px;
+  }
+  
+
+  .btn-red {
+    background-color: #ef4444;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.2s ease;
+  }
+  
+  .btn-red:hover {
+    background-color: #dc2626;
+  }
+
+
+
+/* Render Pane Header */
+.render-header {
+    display: flex;
+    justify-content: space-between; /* 왼쪽 타이틀, 오른쪽 버튼 */
+    align-items: center;
+    margin-bottom: 16px;            /* 아래 출력과 간격 */
+  }
+  
+  /* 렌더링 결과 제목 스타일 */
+  .render-title {
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 1.5rem;     /* 약 24px */
+    font-weight: 700;      /* 더 굵은 강조 */
+    color: #1f2937;        /* 짙은 그레이 */
+    letter-spacing: -0.5px;/* 약간의 타이틀 간격 조정 */
+    text-transform: uppercase; /* 대문자로 강조 */
+  }
+  
+  /* Play 버튼은 기존 .btn-indigo, .btn 그대로 사용하지만 높이를 맞춰줍니다 */
+  #play-button {
+    padding: 8px 16px;
+    font-size: 1rem;
+    font-weight: bold;
+    height: 35px;           /* 타이틀과 정렬되도록 고정 높이 */
+    align-self: flex-start; /* flex-start 로 위치 보정 */
+  }

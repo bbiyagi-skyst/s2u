@@ -1,9 +1,9 @@
+import { postForm, getToken, clearToken } from './auth.js';
 export function requireAuth() {
-  const token = sessionStorage.getItem('token');
+  const token = getToken();
   if (!token) window.location.href = 'login.html';
   return token;
 }
-
 export function logout() {
   const token = requireAuth();
   postForm('/api/auth/logout', { token });

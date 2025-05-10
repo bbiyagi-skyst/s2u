@@ -1,0 +1,96 @@
+/* 전체 배경 및 중앙 정렬 */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f9fafb;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  /* 로그인 카드 */
+  .container {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+  }
+  
+  .login-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+  }
+  
+  /* 제목 */
+  .login-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #111827;
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  
+  /* 입력 폼 스타일 */
+  .login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .login-form label {
+    font-size: 14px;
+    color: #374151;
+    margin-bottom: 4px;
+  }
+  
+  .login-form input {
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border 0.2s, box-shadow 0.2s;
+  }
+  
+  .login-form input:focus {
+    outline: none;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.3);
+  }
+  
+  /*버튼 형식*/
+  button {
+    padding: 10px;
+    background-color: #6366f1;
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  button:hover {
+    background-color: #4f46e5;
+  }
+  
+  
+  /* 회원가입 링크 */
+  .register-link {
+    text-align: center;
+    margin-top: 16px;
+    font-size: 14px;
+    color: #6b7280;
+  }
+  
+  .register-link a {
+    color: #4f46e5;
+    text-decoration: none;
+  }
+  
+  .register-link a:hover {
+    text-decoration: underline;
+  }
+  

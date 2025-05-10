@@ -1,38 +1,97 @@
-import { postForm } from './auth.js';
+// public/js/repoview.js
+import { getForm, postForm } from './auth.js';
 import { requireAuth, logout } from './common.js';
 
-const params = new URLSearchParams(location.search);
-const repoId = params.get('id');
-const token = requireAuth();
+(async () => {
+  // 1) 토큰 & repoId 가져오기
+  const token  = requireAuth();
+  const params = new URLSearchParams(window.location.search);
+  const repoId = params.get('id');
+  console.log(repoId);
+  // DOM 참조
+  const nameDisplay = document.getElementById('name-display');
+  const nameInput   = document.getElementById('name-input');
+  const descInput   = document.getElementById('description');
+  const abcInput    = document.getElementById('abc-input');
+  const backBtn     = document.getElementById('back-btn');
+  const logoutBtn   = document.getElementById('logout-btn');
 
-document.getElementById('logout').addEventListener('click', logout);
-document.getElementById('back').addEventListener('click', () => window.location.href = 'index.html');
+  // 2) 기존 리포 조회 or 새 리포 초기화
+  let repo;
+  if (repoId != -1) {
 
-async function loadRepo() {
-  const res = await postForm('/api/repos/get', { token, repoId });
-  if (res.ok) {
-    const repo = await res.json();
-    document.getElementById('repo-name').textContent = repo.name;
-    document.getElementById('edit-name').value = repo.name;
-    document.getElementById('edit-desc').value = repo.description;
-    document.getElementById('edit-content').value = repo.content;
+    const res = await getForm('/api/repos/get', { token, repoId });
+    if (!res.ok) {
+      console.error('리포지토리 조회 실패:', res.status);
+      return;
+    }
+    repo = await res.json();
+    // 화면 채우기
+    nameDisplay.textContent        = repo.name;
+    nameInput.value                = repo.name;
+    descInput.value                = repo.description;
+    abcInput.value                 = repo.content;
+    if (window.renderAbc) window.renderAbc();
+  } else {
+    console.log("Hello!");
+    // 새 리포
+    repo = null;
+    nameDisplay.textContent = '새 레포지토리';
+    nameInput.value         = '새 레포지토리';
+    descInput.value         = '';
+    abcInput.value          = '';
+    if (window.renderAbc) window.renderAbc();
   }
-}
-loadRepo();
 
-// 업데이트
-document.getElementById('update-submit').addEventListener('click', async () => {
-  const name = document.getElementById('edit-name').value;
-  const description = document.getElementById('edit-desc').value;
-  const content = document.getElementById('edit-content').value;
-  const res = await postForm('/api/repos/update', { token, repoId, name, description, content });
-  if (res.ok) alert('저장되었습니다.');
-});
+  
 
-// 삭제
-document.getElementById('delete-submit').addEventListener('click', async () => {
-  if (confirm('정말 삭제하시겠습니까?')) {
-    const res = await postForm('/api/repos/delete', { token, repoId });
-    if (res.status === 204) window.location.href = 'index.html';
-  }
-});
+  // 4) back-btn 클릭 시 (기존이면 update, 새로 만들면 create)
+  backBtn.addEventListener('click', async () => {
+    const name        = nameInput.value.trim();
+    const description = descInput.value.trim();
+    const content     = abcInput.value;
+
+    let res;
+    if (repoId != -1) {
+      // UPDATE existing
+      res = await postForm('/api/repos/update', {
+        token,
+        repoId,
+        name,
+        description,
+        content
+      });
+      if (res.ok || res.status === 201) {
+        // 완료 후 목록 페이지로
+        window.location.href = `repoview.html?id=${repoId}`;
+      } else {
+        alert('저장에 실패했습니다. 상태 코드: ' + res.status);
+      }
+    } else {
+      
+      // CREATE new
+      res = await postForm('/api/repos/create', {
+        token,
+        name,
+        description,
+        content
+      });
+      if (res.ok || res.status === 201) {
+        // 완료 후 목록 페이지로
+        console.log(res);
+        repo = await res.json();
+        window.location.href = `repoview.html?id=${repo.id}`;
+      } else {
+        alert('저장에 실패했습니다. 상태 코드: ' + res.status);
+      }
+    }
+
+    
+  });
+
+  // 5) 로그아웃 버튼
+  logoutBtn.addEventListener('click', async () => {
+    await postForm('/api/auth/logout', { token });
+    logout();
+  });
+})();

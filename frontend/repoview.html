@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>abcjs Live Rendering</title>
+  <link rel="stylesheet" href="../node_modules/abcjs/abcjs-audio.css">
+  <link rel="stylesheet" href="stylerepo_view.css">
+  <style>
+    #abc-output svg {
+      max-width: 100%;
+      height: auto;
+    }
+    .abcjs-note_selected {
+      fill: red;
+      stroke: red;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="left">
+        <div id="name-display" class="name-display"></div>
+        <div>
+          <span id="description" class="description"></span>
+        </div>
+      </div>
+      <div class="button-group">
+        <button id="back-btn" class="btn btn-gray">목록으로</button>
+        <button id="logout-btn" class="btn btn-purple">로그아웃</button>
+      </div>
+    </div>
+
+    <div id="resizable-container" class="resizable-container">
+      <div id="editor-pane" class="editor-pane">
+        <div class="editor-header">
+          <h2>ABCjs 코드 입력</h2>
+          <div class="button-group">
+            <button id="edit-btn" class="btn btn-yellow">수정</button>
+          <button id="delete-btn" class="btn btn-red">삭제</button>
+          </div>
+          
+        </div>
+        <div id="abc-input" class="abc-input"></div>
+      </div>
+
+      <div id="resizer" class="resizer"></div>
+
+      <div id="render-pane" class="render-pane">
+        <div class="render-header">
+          <div class="render-title">렌더링 결과</div>
+            <button id="play-button" class="btn-indigo btn">Play</button>
+            </div>
+        
+        <div id="abc-output" class="abc-output"></div>
+        
+        <div id="synth-controls"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../node_modules/abcjs/dist/abcjs-basic.js"></script>
+  <script src="../node_modules/abcjs/dist/abcjs-basic-min.js"></script>
+  
+  <script type="module" src="js/repoview.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
