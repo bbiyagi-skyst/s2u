@@ -3,8 +3,8 @@ package dev.jhyub.s2u.data
 data class Bar(
     val code: String?,
     val lyrics: String?,
-//    val notes: List<Generator<Note>>,
-    val notes: List<Note>,
+    val notes: List<Generator<Note>>,
+//    val notes: List<Note>,
     val repeatMark: RepeatMarkType?,
     val pos: CodePosition
 ): Generator<Bar>, Evaluatable<Bar> {
@@ -55,7 +55,8 @@ data class Bar(
 
     fun getUnit(): Int {
         var res = 1
-        for (note in notes) {
+        for (_note in notes) {
+            val note = _note as Note
             val ret = note.getUnit()
             if (res < ret) res = ret
         }

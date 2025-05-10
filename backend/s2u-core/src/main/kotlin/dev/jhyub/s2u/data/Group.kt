@@ -66,8 +66,8 @@ data class CalledGroup(
     fun translate(
         unit: Rhythm,
         defaultKey: String,
-        now: Pair<List<String>, List<String>>
-    ): Pair<List<String>, List<String>> {
+        now: Pair<MutableList<String>, MutableList<String>>
+    ): Pair<MutableList<String>, MutableList<String>> {
         val ret = now
         for (section in sections!!) {
             val ret = section.translate(unit, defaultKey, ret)

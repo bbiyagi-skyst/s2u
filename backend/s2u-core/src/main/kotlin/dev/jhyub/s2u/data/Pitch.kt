@@ -2,6 +2,10 @@ package dev.jhyub.s2u.data
 
 data class Pitch(val name: PitchName, val octave: Int) {
     operator fun plus(semitones: Int): Pitch {
+        if (name == PitchName.R) {
+            return this
+        }
+
         val pitchToInt = mapOf(
             PitchName.C  to 0,
             PitchName.Db to 1,
@@ -43,7 +47,10 @@ data class Pitch(val name: PitchName, val octave: Int) {
         // B4 -> B in abcJS
         // C5 -> C' in abcJS
         var result = name.name;
-        if (octave <= 4) {
+        if (result == "R") {
+            result = "z"
+        }
+        else if (octave <= 4) {
             // , * (4 - octave)
             for (i in 1..(4-octave)) {
                 result = "$result,"
@@ -60,7 +67,7 @@ data class Pitch(val name: PitchName, val octave: Int) {
 }
 
 enum class PitchName {
-    C, Db, D, Eb, E, F, Gb, G, Ab, A, Bb, B
+    C, Db, D, Eb, E, F, Gb, G, Ab, A, Bb, B, R
 }
 
 //fun main() {

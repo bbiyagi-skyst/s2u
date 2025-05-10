@@ -1,5 +1,8 @@
 package dev.jhyub.s2u.data
 
+import dev.jhyub.s2u.data.NoteProperty
+import dev.jhyub.s2u.data.Section
+
 data class Section(
     val name: String?,
     val parameterNames: List<String>,
@@ -61,18 +64,13 @@ data class CalledSection(
     fun translate(
         unit: Rhythm,
         defaultKey: String,
-        now: Pair<List<String>, List<String>>
-    ): Pair<List<String>, List<String>> {
+        now: Pair<MutableList<String>, MutableList<String>>
+    ): Pair<MutableList<String>, MutableList<String>> {
         if (section.clef == Clef.LOW) assert(false);
         assert(bars != null && bars.isNotEmpty())
 
-        var strings: MutableList<String> = now.first as MutableList<String>
-        var lyrics: MutableList<String> = now.second as MutableList<String>
-
-        if (countNodes(strings[strings.lastIndex]) == 4) {
-            strings.add("")
-            lyrics.add("")
-        }
+        var strings: MutableList<String> = now.first
+        var lyrics: MutableList<String> = now.second
 
         // =============================== //
         if (section.key is String) {
@@ -93,7 +91,12 @@ data class CalledSection(
         for (bar in bars!!) {
             val ret = bar.translate(unit)
             strings[strings.lastIndex] = "${strings[strings.lastIndex]}${ret.first}"
-            lyrics[strings.lastIndex] = "${lyrics[strings.lastIndex]}${ret.second}"
+            lyrics[strings.lastIndex] = "${lyrics[strings.lastIndex]}${ret.second}|"
+
+            if (countNodes(strings[strings.lastIndex]) == 4) {
+                strings.add("")
+                lyrics.add("w:")
+            }
         }
 
         return strings to lyrics
@@ -112,3 +115,68 @@ data class CalledSection(
         return res
     }
 }
+
+//fun main() {
+//    println(CalledSection(
+//        annotation=listOf(),
+//        section=Section(
+//            rhythm= Rhythm(4, 4),
+//            tempo= Rhythm(1, 4) to 80,
+//            key= "Cm",
+//            generators= listOf(),
+//            pos= 0 to 0,
+//            name=null,
+//            parameterNames=listOf(),
+//            clef=null
+//        ),
+//        parameters= listOf(),
+//        pos= 0 to 0,
+//        bars= listOf(
+//            Bar(
+//                "Cmaj7 - -",
+//                "Do Re Mi",
+//                listOf(Note(listOf(Pitch(PitchName.C, 4)), Rhythm(1, 4), listOf(),
+//                codePosition = 10 to 13), Note(listOf(Pitch(PitchName.D, 4), Pitch(PitchName.A, 4)), Rhythm(1, 2), listOf(),
+//                    codePosition = 10 to 13), Note(listOf(Pitch(PitchName.E, 4)), Rhythm(1, 4), listOf(),
+//                    codePosition = 10 to 13)),
+//                null, 10 to 13
+//            ),
+//            Bar(
+//                "Cmaj7 - -",
+//                "Do Re Mi",
+//                listOf(Note(listOf(Pitch(PitchName.C, 4)), Rhythm(1, 4), listOf(),
+//                    codePosition = 10 to 13), Note(listOf(Pitch(PitchName.D, 4), Pitch(PitchName.A, 4)), Rhythm(1, 2), listOf(),
+//                    codePosition = 10 to 13), Note(listOf(Pitch(PitchName.E, 4)), Rhythm(1, 4), listOf(),
+//                    codePosition = 10 to 13)),
+//                null, 10 to 13
+//            ),
+//            Bar(
+//                "Cmaj7 - -",
+//                "Do Re Mi",
+//                listOf(Note(listOf(Pitch(PitchName.C, 4)), Rhythm(1, 4), listOf(),
+//                    codePosition = 10 to 13), Note(listOf(Pitch(PitchName.D, 4), Pitch(PitchName.A, 4)), Rhythm(1, 2), listOf(),
+//                    codePosition = 10 to 13), Note(listOf(Pitch(PitchName.E, 4)), Rhythm(1, 4), listOf(),
+//                    codePosition = 10 to 13)),
+//                null, 10 to 13
+//            ),
+//            Bar(
+//                "Cmaj7 - -",
+//                "Do Re Mi",
+//                listOf(Note(listOf(Pitch(PitchName.C, 4)), Rhythm(1, 4), listOf(),
+//                    codePosition = 10 to 13), Note(listOf(Pitch(PitchName.D, 4), Pitch(PitchName.A, 4)), Rhythm(1, 2), listOf(),
+//                    codePosition = 10 to 13), Note(listOf(Pitch(PitchName.E, 4)), Rhythm(1, 4), listOf(),
+//                    codePosition = 10 to 13)),
+//                null, 10 to 13
+//            ),
+//            Bar(
+//                "Cmaj7 - -",
+//                "Do Re Mi",
+//                listOf(Note(listOf(Pitch(PitchName.C, 4)), Rhythm(1, 4), listOf(),
+//                    codePosition = 10 to 13), Note(listOf(Pitch(PitchName.D, 4), Pitch(PitchName.A, 4)), Rhythm(1, 2), listOf(),
+//                    codePosition = 10 to 13), Note(listOf(Pitch(PitchName.E, 4)), Rhythm(1, 4), listOf(),
+//                    codePosition = 10 to 13)),
+//                null, 10 to 13
+//            )
+//        )
+//    ).translate(Rhythm(1, 8), "C", mutableListOf("") to mutableListOf("w:")))
+//}

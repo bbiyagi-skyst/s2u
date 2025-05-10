@@ -36,7 +36,7 @@ data class Sheet(
         // =============================== //
         var defaultKey = "C"
         if (key is String) defaultKey = key
-        val ret = group.translate(Rhythm(1, unit), defaultKey, listOf("") to listOf(""))
+        val ret = group.translate(Rhythm(1, unit), defaultKey, mutableListOf("") to mutableListOf("w:"))
         for (i in 0..ret.first.size-1) {
             res = "${res}${ret.first[i]}\n${ret.second[i]}\n"
         }
