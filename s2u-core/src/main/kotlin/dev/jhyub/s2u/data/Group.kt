@@ -37,7 +37,7 @@ class CalledGroup(
         return group.sections
     }
 
-    fun evaluate(context: Map<String, Literal>) {
+    override fun evaluate(context: Map<String, Literal>) {
         println("evaluating calledgroup")
         group.sections.forEach {
             it.annotation.addAll(annotation)

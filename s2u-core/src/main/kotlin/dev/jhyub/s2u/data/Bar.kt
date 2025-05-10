@@ -11,7 +11,7 @@ class Bar(
         return listOf(this)
     }
 
-    fun evaluate(context: Map<String, Literal>) {
+    override fun evaluate(context: Map<String, Literal>) {
         notes.forEach { it.evaluate(context) }
     }
 }
