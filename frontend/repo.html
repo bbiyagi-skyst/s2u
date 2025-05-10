@@ -1,1 +1,30 @@
-
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>리포지토리 상세</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header>
+    <h1 id="repo-name"></h1>
+    <span id="back" class="btn">목록으로</span>
+    <span id="logout" class="btn">로그아웃</span>
+  </header>
+  <main>
+    <section id="repo-meta">
+      <label>Name: <input type="text" id="edit-name" /></label><br/>
+      <label>Description: <input type="text" id="edit-desc" /></label><br/>
+    </section>
+    <section id="repo-content">
+      <h2>악보 코드</h2>
+      <textarea id="edit-content" rows="10"></textarea><br/>
+      <span id="update-submit" class="btn">저장</span>
+      <span id="delete-submit" class="btn">삭제</span>
+    </section>
+  </main>
+  <script src="js/auth.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/repo.js"></script>
+</body>
+</html>
