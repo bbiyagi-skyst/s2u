@@ -16,6 +16,6 @@ plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
 }
 
-rootProject.name = "s2y"
-include(":s2y-core")
-include(":s2yhub")
+rootProject.name = "s2u"
+include(":s2u-core")
+include(":s2uhub")
