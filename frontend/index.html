@@ -1,1 +1,27 @@
-
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>리포지토리 목록</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header>
+    <h1>공유 악보 리포지토리</h1>
+    <span id="logout" class="btn">로그아웃</span>
+  </header>
+  <main>
+    <ul id="repo-list"></ul>
+    <section id="create-repo">
+      <h2>새 리포지토리 생성</h2>
+      <label>Name: <input type="text" id="new-name" /></label><br/>
+      <label>Description: <input type="text" id="new-desc" /></label><br/>
+      <label>Content:<br/><textarea id="new-content" rows="4"></textarea></label><br/>
+      <span id="create-submit" class="btn">생성</span>
+    </section>
+  </main>
+  <script src="js/auth.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/repos.js"></script>
+</body>
+</html>
