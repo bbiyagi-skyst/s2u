@@ -67,25 +67,6 @@ Units of section. Collection of Note
 
 #### attributes
 - 
-
-### Note
-
-Represents notes
-
-#### attributes
-- pitch
-- rhythm
-- functions (optional)
-
-
-| Element | Description                                 |
-| ------- | ------------------------------------------- |
-| `note`  | `<pitch> <duration> [<dynamics>] [<artic>]` |
-| `rest`  | `rest <duration>`                           |
-| `chord` | `<[pitches]> <duration>`                    |
-| `tempo` | Beats per minute                            |
-| `key`   | Key signature (e.g., C, Dm, F#)             |
-
 ---
 
 ## Syntax Overview
