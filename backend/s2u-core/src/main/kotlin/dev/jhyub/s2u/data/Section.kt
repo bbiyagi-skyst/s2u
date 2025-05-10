@@ -1,18 +1,17 @@
 package dev.jhyub.s2u.data
 
-import dev.jhyub.s2u.SyntaxException
-
-class Section(
+data class Section(
     val name: String?,
-    val parameters: List<String>,
+    val parameterNames: List<String>,
     val rhythm: Rhythm?,
-    val tempo: Pair<String?, Int?>,
+    val tempo: Pair<Rhythm?, Int?>,
     val key: String?,
     val clef: Clef?,
     val generators: List<Generator<Bar>>,
     val pos: CodePosition
 ) {
-    val bars: List<Bar> = generators.map { it.generate() }.flatten()
+    /*
+    var bars: List<Bar> = generators.map { it.generate() }.flatten()
 
     fun evaluate(data: List<Literal>, context: Map<String, Literal>) {
         if(parameters.size != data.size) throw SyntaxException("Invalid number of parameters at ${pos.first}:${pos.second}")
@@ -27,29 +26,35 @@ class Section(
             }
         }
 
+        bars = generators.map { it.evaluate(newContext); it.generate() }.flatten()
         bars.forEach { it.evaluate(newContext) }
     }
+
+     */
 }
 
-class CalledSection(
-    val annotation: MutableList<NoteProperty>,
+data class CalledSection(
+    val annotation: List<NoteProperty>,
     val section: Section,
     val parameters: List<Literal>,
-    val pos: CodePosition
-): Generator<CalledSection> {
-    override fun generate(): List<CalledSection> {
-        return listOf(this)
+    val pos: CodePosition,
+    val bars: List<Bar>? = null
+): Evaluatable<CalledSection>, Generator<CalledSection> {
+    override fun evaluate(context: Context, annotation: List<NoteProperty>): CalledSection {
+        if(parameters.size != section.parameterNames.size) throw RuntimeException("Invalid number of parameters (expected ${section.parameterNames.size}, got ${parameters.size}) at ${pos.first}:${pos.second}")
+        println(context)
+        val oldAnnotation = annotation
+        val annotation = this.annotation.applyContext(context)
+        val newContext: MutableMap<Literal.NameLiteral, Literal> = context.toMutableMap()
+        for ((i, j) in section.parameterNames zip parameters) {
+            newContext[Literal.NameLiteral(i)] = j
+            println("Adding $i - $j to context")
+        }
+        val context = newContext.flatten()
+        return copy(bars = section.generators.map { it.generate(context, oldAnnotation + annotation) }.flatten())
     }
 
-    override fun evaluate(context: Map<String, Literal>) {
-        println("evaluating calledsection")
-        section.bars.forEach {
-            println("for each bar")
-            it.notes.forEach { note ->
-                println("Added annotation")
-                note.properties.addAll(annotation)
-            }
-        }
-        section.evaluate(parameters, context)
+    override fun generate(context: Context, annotation: List<NoteProperty>): List<CalledSection> {
+        return listOf(evaluate(context, annotation))
     }
 }

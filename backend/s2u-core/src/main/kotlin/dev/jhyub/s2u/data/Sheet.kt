@@ -1,6 +1,6 @@
 package dev.jhyub.s2u.data
 
-class Sheet(
+data class Sheet(
     val title: String,
     val composer: String,
     val group: CalledGroup,
@@ -11,6 +11,5 @@ class Sheet(
     val pos: CodePosition
 ) {
     fun evaluate() {
-        group.evaluate(mapOf())
     }
 }

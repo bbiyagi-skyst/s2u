@@ -1,6 +1,6 @@
 package dev.jhyub.s2u.data
 
-class Pitch(val name: PitchName, val octave: Int) {
+data class Pitch(val name: PitchName, val octave: Int) {
 }
 
 enum class PitchName {

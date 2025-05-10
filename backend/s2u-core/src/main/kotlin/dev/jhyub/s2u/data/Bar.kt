@@ -1,18 +1,20 @@
 package dev.jhyub.s2u.data
 
-class Bar(
+data class Bar(
     val code: String?,
     val lyrics: String?,
-    val notes: List<Note>,
+    val notes: List<Generator<Note>>,
     val repeatMark: RepeatMarkType?,
     val pos: CodePosition
-): Generator<Bar> {
-    override fun generate(): List<Bar> {
-        return listOf(this)
+): Generator<Bar>, Evaluatable<Bar> {
+    override fun evaluate(context: Context, annotation: List<NoteProperty>): Bar {
+        return copy(
+            notes = notes.map { it.generate(context, annotation) }.flatten()
+        )
     }
 
-    override fun evaluate(context: Map<String, Literal>) {
-        notes.forEach { it.evaluate(context) }
+    override fun generate(context: Context, annotation: List<NoteProperty>): List<Bar> {
+        return listOf(evaluate(context, annotation))
     }
 }
 
