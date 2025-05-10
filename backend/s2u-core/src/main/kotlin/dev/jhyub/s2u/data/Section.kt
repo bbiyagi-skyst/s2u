@@ -57,4 +57,58 @@ data class CalledSection(
     override fun generate(context: Context, annotation: List<NoteProperty>): List<CalledSection> {
         return listOf(evaluate(context, annotation))
     }
+
+    fun translate(
+        unit: Rhythm,
+        defaultKey: String,
+        now: Pair<List<String>, List<String>>
+    ): Pair<List<String>, List<String>> {
+        if (section.clef == Clef.LOW) assert(false);
+        assert(bars != null && bars.isNotEmpty())
+
+        var strings: MutableList<String> = now.first as MutableList<String>
+        var lyrics: MutableList<String> = now.second as MutableList<String>
+
+        if (countNodes(strings[strings.lastIndex]) == 4) {
+            strings.add("")
+            lyrics.add("")
+        }
+
+        // =============================== //
+        if (section.key is String) {
+            strings[strings.lastIndex] = "${strings[strings.lastIndex]}[K: ${section.key}]"
+        }
+        else {
+            strings[strings.lastIndex] = "${strings[strings.lastIndex]}[K: ${defaultKey}]"
+        }
+        // =============================== //
+        if (section.tempo.first is Rhythm && section.tempo.second is Int) {
+            strings[strings.lastIndex] = "${strings[strings.lastIndex]}[Q: ${(section.tempo.first as Rhythm).numerator}/${(section.tempo.first as Rhythm).denominator}=${section.tempo.second}]"
+        }
+        // =============================== //
+        if (section.rhythm is Rhythm) {
+            strings[strings.lastIndex] = "${strings[strings.lastIndex]}[M: ${section.rhythm.numerator}/${section.rhythm.denominator}]"
+        }
+        // =============================== //
+        for (bar in bars!!) {
+            val ret = bar.translate(unit)
+            strings[strings.lastIndex] = "${strings[strings.lastIndex]}${ret.first}"
+            lyrics[strings.lastIndex] = "${lyrics[strings.lastIndex]}${ret.second}"
+        }
+
+        return strings to lyrics
+    }
+
+    private fun countNodes(string: String): Int {
+        return string.count { it == '|' }
+    }
+
+    fun getUnit(): Int {
+        var res = 1
+        for (bar in bars!!) {
+            val ret = bar.getUnit()
+            if (res < ret) res = ret
+        }
+        return res
+    }
 }

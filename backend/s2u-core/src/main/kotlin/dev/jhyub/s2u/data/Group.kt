@@ -53,4 +53,25 @@ data class CalledGroup(
         val context = newContext.flatten()
         return copy(sections = group.generators.map { it.generate(context, oldAnnotation + annotation) }.flatten())
     }
+
+    fun getUnit(): Int {
+        var res = 1
+        for (section in sections!!) {
+            val ret = section.getUnit()
+            if (res < ret) res = ret
+        }
+        return res
+    }
+
+    fun translate(
+        unit: Rhythm,
+        defaultKey: String,
+        now: Pair<List<String>, List<String>>
+    ): Pair<List<String>, List<String>> {
+        val ret = now
+        for (section in sections!!) {
+            val ret = section.translate(unit, defaultKey, ret)
+        }
+        return ret
+    }
 }
