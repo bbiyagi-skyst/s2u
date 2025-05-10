@@ -8,7 +8,7 @@ class Group(
     val generators: List<Generator<CalledSection>>,
     val pos: CodePosition
 ) {
-    val sections: List<CalledSection> = generators.map { it.generate() }.flatten().toMutableList()
+    val sections: List<CalledSection> = generators.map { it.generate() }.flatten()
 
     fun evaluate(data: List<Literal>, context: Map<String, Literal>) {
         if(parameters.size != data.size) throw SyntaxException("Invalid number of parameters at ${pos.first}:${pos.second}")

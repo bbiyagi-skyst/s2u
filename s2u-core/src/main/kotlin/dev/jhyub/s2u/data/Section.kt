@@ -12,7 +12,7 @@ class Section(
     val generators: List<Generator<Bar>>,
     val pos: CodePosition
 ) {
-    val bars: List<Bar> = generators.map { it.generate() }.flatten().toMutableList()
+    val bars: List<Bar> = generators.map { it.generate() }.flatten()
 
     fun evaluate(data: List<Literal>, context: Map<String, Literal>) {
         if(parameters.size != data.size) throw SyntaxException("Invalid number of parameters at ${pos.first}:${pos.second}")

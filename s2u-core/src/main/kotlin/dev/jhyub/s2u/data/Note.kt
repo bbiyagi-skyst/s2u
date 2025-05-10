@@ -4,6 +4,9 @@ class Note(
     val pitches: List<Pitch>,
     val rhythm: Rhythm,
     val properties: MutableList<NoteProperty>,
+    val finish: Boolean = false, // `true` if semicolon is used
+    val legato: LegatoType? = null,
+    val triplet: TripletType? = null,
     val codePosition: CodePosition
 ) {
     fun evaluate(context: Map<String, Literal>) {
@@ -22,6 +25,14 @@ class Note(
             }
         }
     }
+}
+
+enum class LegatoType {
+    START, END
+}
+
+enum class TripletType {
+    START, END
 }
 
 sealed class NoteProperty {
