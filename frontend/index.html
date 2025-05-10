@@ -1,1 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>abcjs Live Rendering</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* SVG가 부모 요소의 너비를 초과하지 않도록 하고, 비율 유지 */
+    #abc-output svg {
+      max-width: 100%;
+      height: auto;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 p-6">
+  <div class="max-w-7xl mx-auto bg-white rounded-lg shadow-xl overflow-hidden">
+  <div id="resizable-container" class="flex w-full h-[600px]">
+    <!-- 입력 영역 -->
+    <div id="editor-pane" class="p-6 w-1/2 min-w-[200px]">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">ABCjs 코드 입력</h2>
+      <textarea id="abc-input" class="w-full h-[90%] p-3 border border-gray-300 rounded-md font-mono resize-none focus:ring-indigo-500 focus:border-indigo-500 transition duration-300 ease-in-out">
+X: 1
+T: Example Tune
+M: 4/4
+L: 1/4
+C D E F | G A B c ||
+      </textarea>
+    </div>
 
+    <!-- 리사이저 바 -->
+    <div id="resizer" class="w-2 cursor-col-resize bg-gray-300 hover:bg-gray-400"></div>
+
+    <!-- 렌더링 영역 -->
+    <div id="render-pane" class="p-6 w-1/2 min-w-[200px] border-l border-gray-200 bg-gray-50 overflow-auto">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">렌더링 결과</h2>
+      <div id="abc-output" class="rounded-md"></div>
+      <button id="play-button" class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition">
+        ▶️ 재생
+      </button>
+    </div>
+  </div>
+</div>
+
+
+  <script src="node_modules/abcjs/dist/abcjs-basic.js"></script>
+  <script src="node_modules/abcjs/dist/abcjs-basic-min.js"></script>
+  <script src="app.js"></script>
+
+</body>
+</html>
