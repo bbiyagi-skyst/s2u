@@ -9,7 +9,10 @@ data class Sheet(
     val key: String?,
     val clef: Clef?,
     val pos: CodePosition
-) {
-    fun evaluate() {
+): Evaluatable<Sheet> {
+    override fun evaluate(context: Context, annotation: List<NoteProperty>): Sheet {
+        return copy(
+            group = group.evaluate(context, annotation)
+        )
     }
 }
